@@ -1,10 +1,10 @@
 name: Build Jolt Android ARM64
 on:
-  workflow_dispatch:
+  workflow_dispatch
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout JoltPhysics
         uses: actions/checkout@v4
@@ -12,6 +12,7 @@ jobs:
           repository: jrouwe/JoltPhysics
           ref: master
           submodules: true
+          path: JoltPhysics # 强制检出到 JoltPhysics 文件夹
 
       - name: Setup Android NDK r27c
         id: setup_ndk
@@ -27,6 +28,7 @@ jobs:
         env:
           NDK_PATH: ${{ steps.setup_ndk.outputs.ndk-path }}
         run: |
+          cd JoltPhysics
           mkdir build
           cd build
           cmake .. \
@@ -37,6 +39,7 @@ jobs:
             -DJOLT_BUILD_TESTS=OFF \
             -DJOLT_BUILD_SAMPLES=OFF \
             -DJOLT_BUILD_PROFILER=OFF \
+            -DJOLT_ENABLE_DEBUG_ASSERTIONS=OFF \
             -G Ninja
           ninja
 
@@ -44,4 +47,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: libJolt-android
-          path: build/libJolt.so
+          path: JoltPhysics/build/libJolt.so

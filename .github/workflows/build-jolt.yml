@@ -12,7 +12,9 @@ jobs:
           repository: jrouwe/JoltPhysics
           ref: master
           submodules: true
-          path: JoltPhysics # 强制检出到 JoltPhysics 文件夹
+
+      - name: List root files
+        run: ls -la
 
       - name: Setup Android NDK r27c
         id: setup_ndk
@@ -28,7 +30,6 @@ jobs:
         env:
           NDK_PATH: ${{ steps.setup_ndk.outputs.ndk-path }}
         run: |
-          cd JoltPhysics
           mkdir build
           cd build
           cmake .. \
@@ -47,4 +48,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: libJolt-android
-          path: JoltPhysics/build/libJolt.so
+          path: build/libJolt.so
